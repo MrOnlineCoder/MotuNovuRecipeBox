@@ -8,9 +8,10 @@ export type RecipeStore = {
   error: string | null;
 } & {
   fetchAll: () => Promise<void>;
+  toggleRecipeFavorite: (id: string) => void;
 };
 
-export const useRecipesStore = create<RecipeStore>((set) => ({
+export const useRecipesStore = create<RecipeStore>((set, get) => ({
   recipes: [],
   isLoading: false,
   error: null,
@@ -27,5 +28,17 @@ export const useRecipesStore = create<RecipeStore>((set) => ({
     }
 
     set({ isLoading: false });
+  },
+
+  toggleRecipeFavorite: (id: string) => {
+    const recipes = get().recipes.slice();
+
+    const recipe = recipes.find((r) => r.id === id);
+
+    if (recipe) {
+      recipe.isFavorite = !recipe.isFavorite;
+    }
+
+    set({ recipes });
   },
 }));

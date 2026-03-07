@@ -1,0 +1,25 @@
+import { ChevronLeftCircleIcon, CookingPot, HeartIcon, HeartMinusIcon } from "lucide-react"
+import { Button } from "../ui/button"
+
+export const RecipeViewHeader: React.FC<{
+    isFavorite: boolean
+    onToggleFavorite: () => void
+    onBack: () => void
+}> = ({ isFavorite, onToggleFavorite, onBack }) => {
+    return <div className="w-full p-2 bg-gray-50 flex h-16 border-t items-center justify-between">
+        <div className="flex gap-2 items-center cursor-pointer" onClick={onBack}>
+            <ChevronLeftCircleIcon size={24} />
+        </div>
+
+        <div className="flex gap-2 items-center">
+            <Button variant={isFavorite ? 'destructive' : 'default'} onClick={onToggleFavorite}>
+                {isFavorite ? <HeartMinusIcon size={16} strokeWidth={2.6} /> : <HeartIcon size={16} />}
+            </Button>
+
+            <Button variant="success">
+                <CookingPot size={16} />
+                Cook
+            </Button>
+        </div>
+    </div>
+}

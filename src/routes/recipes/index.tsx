@@ -1,4 +1,4 @@
-import { RecipeCard } from '@/components/recipeCard'
+import { RecipeCard } from '@/components/RecipeCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useRecipesStore } from '@/store'
@@ -46,6 +46,6 @@ const RouteComponent: React.FC = () => {
 }
 
 
-export const Route = createFileRoute('/recipes')({
+export const Route = createFileRoute('/recipes/')({
     component: RouteComponent,
 })

@@ -164,7 +164,7 @@ const MOCK_RECIPES: Recipe[] = [
         text: 'Add macaroni to sauce and mix well',
       },
       {
-        text: 'OPTIONAL: transfer to baking dish, top with breadcrumbs and broil at 180°C for 15 min',
+        text: 'Transfer to baking dish, top with breadcrumbs and broil at 180°C for 15 min',
         timer: 15 * 60,
         isOptional: true,
       },
