@@ -6,7 +6,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { BookPlusIcon, Calendar1Icon, ChefHat, CircleChevronRightIcon, SearchIcon } from 'lucide-react'
 
 const Index: React.FC = () => {
-    return <div className="flex flex-col gap-5 justify-center items-center h-full self-center">
+    return <div className="flex flex-col gap-5 justify-center items-center h-full self-center px-4">
         <div className="flex flex-col gap-1 justify-center items-center">
             <ChefHat size={64} />
             <h1 className="text-xl font-bold">What would you like to cook today?</h1>

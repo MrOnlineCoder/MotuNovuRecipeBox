@@ -11,12 +11,20 @@ export enum RecipeIngredientUnit {
   TABLESPOONS = 'tbsp',
   TEASPOONS = 'tsp',
   PIECES = 'pcs',
+
+  TO_TASTE = 'to taste',
 }
 
 export interface RecipeIngredient {
   name: string;
   quantity: number;
   unit: RecipeIngredientUnit;
+}
+
+export interface RecipeInstruction {
+  text: string;
+  isOptional?: boolean;
+  timer?: number | null; //in seconds
 }
 
 export interface Recipe {
@@ -36,7 +44,9 @@ export interface Recipe {
 
   ingredients: RecipeIngredient[];
 
-  instructions: string[];
+  instructions: RecipeInstruction[];
+
+  notes: string | null;
 
   createdAt: string;
   updatedAt: string | null;
