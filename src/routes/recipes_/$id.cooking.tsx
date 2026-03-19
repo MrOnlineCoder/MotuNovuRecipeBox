@@ -1,70 +1,105 @@
-import { StartCookModal } from '@/components/modals/StartCookModal'
-import { RecipeViewHeader } from '@/components/navigation/RecipeViewHeader'
+import { FixedBottomRender } from '@/components/layouts/FixedBottomRender'
+import { RecipeCookHeader } from '@/components/navigation/RecipeCookHeader'
+import { RecipeCookNavbar } from '@/components/navigation/RecipeCookNavbar'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { formatDate, formatIngredientUnit, formatSecondsDuration } from '@/lib/format'
+import { formatIngredientUnit, formatSecondsDuration } from '@/lib/format'
+import { recalculateIngredients } from '@/lib/ingredients'
+import { cn, scrollSmoothTo } from '@/lib/utils'
 import { useRecipesStore } from '@/store'
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { AlarmClockIcon, CalendarIcon, ClipboardClock, ClockIcon, DotIcon, EarthIcon, TagIcon } from 'lucide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { AlarmClockIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
-
-export const Route = createFileRoute('/recipes/$id')({
+export const Route = createFileRoute('/recipes_/$id/cooking')({
     component: RouteComponent,
+    validateSearch: (search) => {
+        return {
+            servings: Number(search.servings ?? 1)
+        }
+    }
 })
 
+const INGREDIENT_CHECK_STEP = 0;
 
 function RouteComponent() {
     const params = Route.useParams()
-    const router = useRouter()
+    const query = Route.useSearch()
     const store = useRecipesStore()
+
+    const navigate = Route.useNavigate()
+
+    const [servingsCount, setServingsCount] = useState(query.servings);
+
+    const [currentStep, setCurrentStep] = useState(0);
 
     const recipe = useMemo(() => {
         return store.recipes.find(r => r.id === params.id) ?? null
     }, [params.id, store.recipes]);
 
-    const [cookModalShown, setCookModalShown] = useState(false);
+    const nextStepTitle = useMemo(() => {
+        if (!recipe) return '';
 
-    const returnToRecipes = () => {
-        router.navigate({
-            to: '/recipes'
-        });
+        if (currentStep === INGREDIENT_CHECK_STEP) {
+            return 'Ingredients ready';
+        }
+
+        if (currentStep < recipe.instructions.length) {
+            return 'Go to step ' + (currentStep + 1);
+        }
+
+        return 'Finish';
+    }, [currentStep]);
+
+    const ingredients = useMemo(() => {
+        if (!recipe) return [];
+
+        return recalculateIngredients(recipe, servingsCount);
+    }, [recipe, servingsCount]);
+
+    const onNextStep = () => {
+        if (!recipe) return;
+
+        const newStep = currentStep + 1;
+
+        if (newStep > recipe.instructions.length) {
+            returnToRecipes();
+            return;
+        }
+
+        setCurrentStep(newStep);
+
+        scrollSmoothTo(document.getElementById(`step-${newStep - 1}`));
     }
 
-    const startCooking = (servings: number) => {
-        router.navigate({
-            to: `/recipes/${recipe!.id}/cooking`,
-            search: {
-                servings
+    const returnToRecipes = () => {
+        navigate({
+            to: '/recipes/$id',
+            params: {
+                id: params.id
             }
-        });
+        })
     }
 
     if (!recipe) {
         return <div className="flex flex-col gap-4">
-            <RecipeViewHeader isFavorite={false} onToggleFavorite={() => { }} onBack={returnToRecipes} onCook={() => { }} />
+            <RecipeCookHeader
+                onServingsChange={setServingsCount}
+                servings={servingsCount}
+                onBack={returnToRecipes} />
 
             <div className="px-2 py-3 flex flex-col gap-5">
                 <Skeleton className="w-full rounded-sm h-64" />
-
-                <div className="flex flex-col gap-1">
-                    <Skeleton className="w-full rounded-sm h-16" />
-
-                    <Skeleton className="w-full rounded-sm h-64" />
-                </div>
-
-                <Skeleton className="w-full rounded-sm h-24" />
             </div>
         </div>
     }
 
     return <div className="flex flex-col gap-4">
-        <RecipeViewHeader
-            isFavorite={recipe.isFavorite}
-            onToggleFavorite={() => store.toggleRecipeFavorite(recipe.id)}
-            onBack={returnToRecipes}
-            onCook={() => setCookModalShown(true)}
-        />
+        <RecipeCookHeader
+            onServingsChange={setServingsCount}
+            servings={servingsCount}
+            onBack={returnToRecipes} />
 
         <div className="px-2 py-3 flex flex-col gap-5">
             <img src={recipe.photoUrl} alt={recipe.name} className="object-cover w-full h-auto rounded-sm" />
@@ -80,37 +115,14 @@ function RouteComponent() {
             </div>
 
             <div className="flex flex-col gap-1">
-                <div className="flex gap-1 items-center">
-                    <ClipboardClock size={16} />
-                    <b>{recipe.prepTime} min</b> for prep
-                </div>
-                <div className="flex gap-1 items-center">
-                    <ClockIcon size={16} />
-                    <b>{recipe.cookTime} min</b> for cooking
-                </div>
-                <div className="flex gap-1 items-center">
-                    <EarthIcon size={16} />
-                    <b>{recipe.cuisine}</b> cuisine
-                </div>
-                {recipe.tags.length > 0 && <div className="flex gap-1 items-center">
-                    <TagIcon size={16} />
-                    {recipe.tags.join(', ')}
-                </div>}
-                <div className="flex gap-1 items-center">
-                    <CalendarIcon size={16} />
-                    created {formatDate(recipe.createdAt)}
-                </div>
-            </div>
-
-            <div className="flex flex-col gap-1">
                 <h3 className="text-lg font-semibold">
-                    Ingredients ({recipe.servings} servings)
+                    Ingredients ({servingsCount} servings)
                 </h3>
                 <Separator />
-                <div className="flex flex-col gap-1 justify-center">
-                    {recipe.ingredients.map((ingredient, index) => (
+                <div className="flex flex-col gap-1.5 justify-center">
+                    {ingredients.map((ingredient, index) => (
                         <div key={index} className="flex gap-1 items-center">
-                            <DotIcon size={16} />
+                            <Checkbox className="w-8 h-8" />
                             {ingredient.name}
 
                             <span className="text-secondary-foreground text-sm">
@@ -128,7 +140,14 @@ function RouteComponent() {
                 <Separator />
                 <div className="flex flex-col gap-8 justify-center mt-2">
                     {recipe.instructions.map((instruction, index) => (
-                        <div key={index} className="flex gap-2 items-start justify-start">
+                        <div key={index} id={`step-${index}`} className={
+                            cn(
+                                "flex gap-2 items-start justify-start rounded-sm p-2",
+                                {
+                                    "bg-chart-2/30": currentStep === index + 1,
+                                }
+                            )
+                        }>
                             <div className="flex justify-center items-center w-8 h-8 min-w-8 min-h-8 rounded-full border-2 border-secondary font-bold text-lg">
                                 {index + 1}
                             </div>
@@ -157,13 +176,14 @@ function RouteComponent() {
                     {recipe.notes}
                 </div>
             </div>}
-
-
-            {cookModalShown && <StartCookModal
-                baseServings={recipe.servings}
-                onConfirm={startCooking}
-                onClose={() => setCookModalShown(false)} />}
         </div>
+
+        <FixedBottomRender>
+            <RecipeCookNavbar
+                title={nextStepTitle}
+                onNextStep={onNextStep}
+            />
+        </FixedBottomRender>
 
     </div>
 }

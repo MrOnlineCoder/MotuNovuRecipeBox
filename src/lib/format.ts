@@ -1,11 +1,10 @@
 import { RecipeIngredientUnit, type RecipeIngredient } from '@/entities/recipe';
+import { isIngredientQuantitative } from './ingredients';
 
 export const formatIngredientUnit = (ingredient: RecipeIngredient) => {
-  const nonQuantativeUnits = [RecipeIngredientUnit.TO_TASTE];
-
-  return nonQuantativeUnits.includes(ingredient.unit)
-    ? ingredient.unit
-    : `${ingredient.quantity} ${ingredient.unit}`;
+  return isIngredientQuantitative(ingredient)
+    ? `${ingredient.quantity} ${ingredient.unit}`
+    : ingredient.unit;
 };
 
 export const formatDate = (datetime: string | Date) => {

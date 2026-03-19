@@ -1,9 +1,11 @@
 import { RecipeCard } from '@/components/RecipeCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useRecipesStore } from '@/store'
 import { createFileRoute } from '@tanstack/react-router'
 import { BookDashedIcon, BookPlusIcon } from 'lucide-react'
+import { useEffect, useMemo, useRef } from 'react'
 
 
 const EmptyRecipesList: React.FC = () => {
@@ -27,6 +29,52 @@ const RouteComponent: React.FC = () => {
 
     const hasRecipes = recipes.length > 0
 
+    const searchParams = Route.useSearch()
+
+    const searchInputRef = useRef<HTMLInputElement>(null)
+
+    const navigate = Route.useNavigate()
+
+    useEffect(() => {
+        if (!isLoading && searchInputRef.current && searchParams.q !== undefined) {
+            searchInputRef.current!.value = searchParams.q
+            searchInputRef.current!.focus()
+        }
+    }, [isLoading]);
+
+    const filteredRecipes = useMemo(() => {
+        return recipes.filter(recipe => {
+            if (!searchParams.q) return true;
+
+            const q = searchParams.q.toLowerCase()
+
+            return recipe.name.toLowerCase().includes(q)
+                || recipe.description.toLowerCase().includes(q)
+                || recipe.cuisine.toLowerCase().includes(q)
+                || recipe.tags.some(tag => tag.toLowerCase().includes(q));
+        });
+    }, [recipes, searchParams.q]);
+
+    const onSearchChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+        navigate({
+            search: {
+                q: ev.target.value
+            }
+        })
+    }
+
+    if (isLoading) {
+        return <div className="flex flex-col gap-4 px-4 pt-3">
+            <Skeleton className="w-full h-8" />
+            <Skeleton className="w-full h-9" />
+            <div className="flex flex-col gap-4">
+                <Skeleton className="w-full h-20" />
+                <Skeleton className="w-full h-20" />
+                <Skeleton className="w-full h-20" />
+            </div>
+        </div>
+    }
+
     if (!hasRecipes) {
         return <EmptyRecipesList />
     }
@@ -34,10 +82,15 @@ const RouteComponent: React.FC = () => {
     return <div className="flex flex-col gap-4 px-4 pt-3">
         <h1 className="text-2xl font-bold self-center">Recipes</h1>
 
-        <Input size={48} placeholder="Search by title, description, ingredients..." />
+        <Input
+            size={48}
+            placeholder="Search by title, description, ingredients..."
+            value={searchParams.q}
+            onChange={onSearchChange}
+            ref={searchInputRef} />
 
         <div className="flex flex-col gap-4">
-            {recipes.map(recipe => (
+            {filteredRecipes.map(recipe => (
                 <RecipeCard recipe={recipe} key={recipe.id} />
             ))}
 
@@ -48,4 +101,7 @@ const RouteComponent: React.FC = () => {
 
 export const Route = createFileRoute('/recipes/')({
     component: RouteComponent,
+    validateSearch: (search) => {
+        return search.q !== undefined ? { q: `${search.q}` } : {}
+    }
 })

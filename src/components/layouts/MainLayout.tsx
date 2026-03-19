@@ -6,7 +6,9 @@ export const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }
             {children}
         </div>
 
+        <div className="flex flex-col w-full" id="app-bottom-container">
 
+        </div>
         <Navbar />
     </div>
 }

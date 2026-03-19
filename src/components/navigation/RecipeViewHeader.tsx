@@ -5,7 +5,8 @@ export const RecipeViewHeader: React.FC<{
     isFavorite: boolean
     onToggleFavorite: () => void
     onBack: () => void
-}> = ({ isFavorite, onToggleFavorite, onBack }) => {
+    onCook: () => void
+}> = ({ isFavorite, onToggleFavorite, onBack, onCook }) => {
     return <div className="w-full p-2 bg-gray-50 flex h-16 border-t items-center justify-between">
         <div className="flex gap-2 items-center cursor-pointer" onClick={onBack}>
             <ChevronLeftCircleIcon size={24} />
@@ -16,7 +17,7 @@ export const RecipeViewHeader: React.FC<{
                 {isFavorite ? <HeartMinusIcon size={16} strokeWidth={2.6} /> : <HeartIcon size={16} />}
             </Button>
 
-            <Button variant="success">
+            <Button variant="success" onClick={onCook}>
                 <CookingPot size={16} />
                 Cook
             </Button>

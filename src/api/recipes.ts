@@ -286,5 +286,5 @@ const MOCK_RECIPES: Recipe[] = [
 ];
 
 export const recipesApi = {
-  getList: () => delayedReturn(1000, () => MOCK_RECIPES),
+  getList: () => delayedReturn(5000, () => MOCK_RECIPES),
 };
