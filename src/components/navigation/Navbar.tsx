@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useRouter, useRouterState } from "@tanstack/react-router"
-import { BookOpenIcon, HeartIcon, HouseIcon } from "lucide-react";
+import { BookOpenIcon, HeartIcon, HouseIcon, ShoppingCartIcon } from "lucide-react";
 
 export const Navbar: React.FC = () => {
     const route = useRouterState()
@@ -21,10 +21,10 @@ export const Navbar: React.FC = () => {
             activeIcon: <BookOpenIcon size={24} strokeWidth={2.6} />
         },
         {
-            label: "Favorites",
-            path: '/favorites',
-            icon: <HeartIcon size={24} />,
-            activeIcon: <HeartIcon size={24} strokeWidth={2.6} />
+            label: "Shopping",
+            path: '/shopping',
+            icon: <ShoppingCartIcon size={24} />,
+            activeIcon: <ShoppingCartIcon size={24} strokeWidth={2.6} />
         }
     ];
 

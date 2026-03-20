@@ -1,8 +1,9 @@
 import { RecipeCard } from '@/components/RecipeCard'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Panel } from '@/components/ui/panel'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useRecipesStore } from '@/store'
+import { useRecipesStore } from '@/store/recipe'
 import { createFileRoute } from '@tanstack/react-router'
 import { BookDashedIcon, BookPlusIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef } from 'react'
@@ -43,7 +44,7 @@ const RouteComponent: React.FC = () => {
     }, [isLoading]);
 
     const filteredRecipes = useMemo(() => {
-        return recipes.filter(recipe => {
+        const filtered = recipes.filter(recipe => {
             if (!searchParams.q) return true;
 
             const q = searchParams.q.toLowerCase()
@@ -53,6 +54,15 @@ const RouteComponent: React.FC = () => {
                 || recipe.cuisine.toLowerCase().includes(q)
                 || recipe.tags.some(tag => tag.toLowerCase().includes(q));
         });
+
+        filtered.sort((a, b) => {
+            const aScore = a.isFavorite ? 1 : 0;
+            const bScore = b.isFavorite ? 1 : 0;
+
+            return bScore - aScore;
+        });
+
+        return filtered;
     }, [recipes, searchParams.q]);
 
     const onSearchChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,8 +103,11 @@ const RouteComponent: React.FC = () => {
             {filteredRecipes.map(recipe => (
                 <RecipeCard recipe={recipe} key={recipe.id} />
             ))}
-
         </div>
+
+        {!filteredRecipes.length && <Panel>
+            No recipes found for your query
+        </Panel>}
     </div>
 }
 

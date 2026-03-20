@@ -7,10 +7,11 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { formatIngredientUnit, formatSecondsDuration } from '@/lib/format'
 import { recalculateIngredients } from '@/lib/ingredients'
 import { cn, scrollSmoothTo } from '@/lib/utils'
-import { useRecipesStore } from '@/store'
+import { useRecipesStore } from '@/store/recipe'
 import { createFileRoute } from '@tanstack/react-router'
 import { AlarmClockIcon } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/recipes_/$id/cooking')({
     component: RouteComponent,
@@ -33,6 +34,8 @@ function RouteComponent() {
     const [servingsCount, setServingsCount] = useState(query.servings);
 
     const [currentStep, setCurrentStep] = useState(0);
+
+    const [currentStepTimer, setCurrentStepTimer] = useState<number | null>(null);
 
     const recipe = useMemo(() => {
         return store.recipes.find(r => r.id === params.id) ?? null
@@ -58,12 +61,24 @@ function RouteComponent() {
         return recalculateIngredients(recipe, servingsCount);
     }, [recipe, servingsCount]);
 
+    const tickTimer = () => {
+        if (currentStepTimer === null) return;
+
+        if (currentStepTimer <= 0) {
+            setCurrentStepTimer(null);
+            return;
+        }
+
+        setCurrentStepTimer(currentStepTimer - 1);
+    };
+
     const onNextStep = () => {
         if (!recipe) return;
 
         const newStep = currentStep + 1;
 
         if (newStep > recipe.instructions.length) {
+            toast.success('Cooking finished. Bon apetit!');
             returnToRecipes();
             return;
         }
@@ -71,6 +86,14 @@ function RouteComponent() {
         setCurrentStep(newStep);
 
         scrollSmoothTo(document.getElementById(`step-${newStep - 1}`));
+
+        const instruction = recipe.instructions[newStep - 1];
+
+        if (instruction.timer) {
+            setCurrentStepTimer(instruction.timer);
+        } else {
+            setCurrentStepTimer(null);
+        }
     }
 
     const returnToRecipes = () => {
@@ -81,6 +104,14 @@ function RouteComponent() {
             }
         })
     }
+
+    useEffect(() => {
+        if (currentStepTimer != null && currentStepTimer > 0) {
+            const timerId = setTimeout(tickTimer, 1000);
+
+            return () => clearTimeout(timerId);
+        }
+    }, [currentStepTimer]);
 
     if (!recipe) {
         return <div className="flex flex-col gap-4">
@@ -182,6 +213,7 @@ function RouteComponent() {
             <RecipeCookNavbar
                 title={nextStepTitle}
                 onNextStep={onNextStep}
+                timeLeft={currentStepTimer}
             />
         </FixedBottomRender>
 

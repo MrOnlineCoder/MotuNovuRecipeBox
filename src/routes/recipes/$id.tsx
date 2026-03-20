@@ -3,10 +3,12 @@ import { RecipeViewHeader } from '@/components/navigation/RecipeViewHeader'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDate, formatIngredientUnit, formatSecondsDuration } from '@/lib/format'
-import { useRecipesStore } from '@/store'
+import { useRecipesStore } from '@/store/recipe'
+import { useShoppingStore } from '@/store/shopping'
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { AlarmClockIcon, CalendarIcon, ClipboardClock, ClockIcon, DotIcon, EarthIcon, TagIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { toast } from 'sonner'
 
 
 export const Route = createFileRoute('/recipes/$id')({
@@ -18,10 +20,17 @@ function RouteComponent() {
     const params = Route.useParams()
     const router = useRouter()
     const store = useRecipesStore()
+    const shopping = useShoppingStore()
 
     const recipe = useMemo(() => {
         return store.recipes.find(r => r.id === params.id) ?? null
     }, [params.id, store.recipes]);
+
+    const isInShoppingCart = useMemo(() => {
+        if (!recipe) return false;
+
+        return shopping.hasRecipeInCart(recipe)
+    }, [recipe, shopping.cart]);
 
     const [cookModalShown, setCookModalShown] = useState(false);
 
@@ -40,9 +49,29 @@ function RouteComponent() {
         });
     }
 
+    const toggleFavorite = (id: string) => {
+        const isFavorite = recipe?.isFavorite;
+
+        if (isFavorite) {
+            toast.success('Recipe removed from favorites');
+        } else {
+            toast.success('Recipe added to favorites');
+        }
+
+        store.toggleRecipeFavorite(id);
+    }
+
+    const addRecipeToShoppingCart = () => {
+        if (!recipe) return;
+
+        shopping.addRecipeToCart(recipe);
+
+        toast.success('Recipe added to shopping cart')
+    }
+
     if (!recipe) {
         return <div className="flex flex-col gap-4">
-            <RecipeViewHeader isFavorite={false} onToggleFavorite={() => { }} onBack={returnToRecipes} onCook={() => { }} />
+            <RecipeViewHeader isInCart={false} onAddToCart={() => { }} isFavorite={false} onToggleFavorite={() => { }} onBack={returnToRecipes} onCook={() => { }} />
 
             <div className="px-2 py-3 flex flex-col gap-5">
                 <Skeleton className="w-full rounded-sm h-64" />
@@ -60,10 +89,12 @@ function RouteComponent() {
 
     return <div className="flex flex-col gap-4">
         <RecipeViewHeader
+            isInCart={isInShoppingCart}
             isFavorite={recipe.isFavorite}
-            onToggleFavorite={() => store.toggleRecipeFavorite(recipe.id)}
+            onToggleFavorite={() => toggleFavorite(recipe.id)}
             onBack={returnToRecipes}
             onCook={() => setCookModalShown(true)}
+            onAddToCart={() => addRecipeToShoppingCart()}
         />
 
         <div className="px-2 py-3 flex flex-col gap-5">
