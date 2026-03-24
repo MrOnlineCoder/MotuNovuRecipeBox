@@ -1,6 +1,10 @@
 import { RecipeIngredientUnit, type RecipeIngredient } from '@/entities/recipe';
 import { isIngredientQuantitative } from './ingredients';
 
+export const formatDoubleDecimal = (num: number) => {
+  return `${Math.round(num * 100) / 100}`;
+};
+
 export const formatIngredientUnit = (ingredient: RecipeIngredient) => {
   return isIngredientQuantitative(ingredient)
     ? `${ingredient.quantity} ${ingredient.unit}`
@@ -28,4 +32,8 @@ export const formatSecondsDuration = (seconds: number) => {
   } else {
     return `${remainingSeconds} sec`;
   }
+};
+
+export const pluralizeRecipeCount = (count: number) => {
+  return `${count} ${count === 1 ? 'recipe' : 'recipes'}`;
 };

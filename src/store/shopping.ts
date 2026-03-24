@@ -9,6 +9,7 @@ export type ShoppingStore = {
   addRecipeToCart: (recipe: Recipe) => void;
   removeRecipeFromCart: (recipe: Recipe) => void;
   changeRecipeServings: (recipe: Recipe, servings: number) => void;
+  clearCart: () => void;
 };
 
 export const useShoppingStore = create<ShoppingStore>((set, get) => ({
@@ -33,6 +34,10 @@ export const useShoppingStore = create<ShoppingStore>((set, get) => ({
 
   removeRecipeFromCart: (recipe: Recipe) => {
     set({ cart: get().cart.filter((item) => item.recipeId !== recipe.id) });
+  },
+
+  clearCart: () => {
+    set({ cart: [] });
   },
 
   changeRecipeServings: (recipe: Recipe, servings: number) => {

@@ -3,7 +3,7 @@ import {
   RecipeIngredientUnit,
   type Recipe,
 } from '@/entities/recipe';
-import { delayedReturn } from '@/utils/delay';
+import { delayedReturn } from '@/lib/utils';
 
 const MOCK_RECIPES: Recipe[] = [
   {
