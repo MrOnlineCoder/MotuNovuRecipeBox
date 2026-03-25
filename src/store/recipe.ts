@@ -9,6 +9,8 @@ export type RecipeStore = {
 } & {
   fetchAll: () => Promise<void>;
   toggleRecipeFavorite: (id: string) => void;
+  getPossibleCuisines: () => string[];
+  getPossibleTags: () => string[];
 };
 
 export const useRecipesStore = create<RecipeStore>((set, get) => ({
@@ -40,5 +42,27 @@ export const useRecipesStore = create<RecipeStore>((set, get) => ({
     }
 
     set({ recipes });
+  },
+
+  getPossibleCuisines: () => {
+    const cuisinesSet = new Set<string>();
+
+    for (const recipe of get().recipes) {
+      cuisinesSet.add(recipe.cuisine);
+    }
+
+    return Array.from(cuisinesSet);
+  },
+
+  getPossibleTags: () => {
+    const tagsSet = new Set<string>();
+
+    for (const recipe of get().recipes) {
+      for (const tag of recipe.tags) {
+        tagsSet.add(tag);
+      }
+    }
+
+    return Array.from(tagsSet);
   },
 }));

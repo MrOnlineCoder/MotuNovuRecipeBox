@@ -1,11 +1,39 @@
 import { cn } from "@/lib/utils";
+import { useRecipesStore } from "@/store/recipe";
 import { useRouter, useRouterState } from "@tanstack/react-router"
 import { BookOpenIcon, HeartIcon, HouseIcon, ShoppingCartIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { useShoppingStore } from "@/store/shopping";
 
 export const Navbar: React.FC = () => {
     const route = useRouterState()
 
     const router = useRouter()
+
+    const store = useRecipesStore()
+    const shopping = useShoppingStore()
+
+    const makeRecipesIcon = (
+        active = false
+    ) => {
+        return <div className="relative">
+            <BookOpenIcon size={24} strokeWidth={active ? 2.6 : 1.5} />
+            {store.recipes.length > 0 && <Badge variant="default" className="absolute -right-3 -top-2 w-5 h-5">
+                {store.recipes.length}
+            </Badge>}
+        </div>
+    }
+
+    const makeShoppingIcon = (
+        active = false
+    ) => {
+        return <div className="relative">
+            <ShoppingCartIcon size={24} strokeWidth={active ? 2.6 : 1.5} />
+            {shopping.cart.length > 0 && <Badge variant="destructive" className="absolute -right-3 -top-2 w-5 h-5">
+                {shopping.cart.length}
+            </Badge>}
+        </div>
+    }
 
     const buttons = [
         {
@@ -17,14 +45,14 @@ export const Navbar: React.FC = () => {
         {
             label: "Recipes",
             path: '/recipes',
-            icon: <BookOpenIcon size={24} />,
-            activeIcon: <BookOpenIcon size={24} strokeWidth={2.6} />
+            icon: makeRecipesIcon(false),
+            activeIcon: makeRecipesIcon(true)
         },
         {
             label: "Shopping",
             path: '/shopping',
-            icon: <ShoppingCartIcon size={24} />,
-            activeIcon: <ShoppingCartIcon size={24} strokeWidth={2.6} />
+            icon: makeShoppingIcon(false),
+            activeIcon: makeShoppingIcon(true)
         }
     ];
 
