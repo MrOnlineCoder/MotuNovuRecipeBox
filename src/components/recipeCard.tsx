@@ -1,6 +1,7 @@
 import type { Recipe } from "@/entities/recipe";
 import { useRouter } from "@tanstack/react-router";
 import { ClockIcon, HeartIcon, UtensilsIcon } from "lucide-react";
+import { Badge } from "./ui/badge";
 
 export const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     const router = useRouter()
@@ -12,7 +13,7 @@ export const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     }
 
     return <div className="w-full border rounded-sm flex p-2 pr-4 gap-2" onClick={navigateToRecipe}>
-        <img src={recipe.photoUrl} alt={recipe.name} className="h-16 rounded-sm w-auto object-cover" />
+        {recipe.photoUrl && <img src={recipe.photoUrl} alt={recipe.name} className="h-16 rounded-sm w-auto object-cover" />}
 
         <div className="flex flex-col gap-2 w-full">
             <h1 className="text-lg font-bold">{recipe.name}</h1>

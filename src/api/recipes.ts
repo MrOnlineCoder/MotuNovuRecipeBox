@@ -285,6 +285,81 @@ const MOCK_RECIPES: Recipe[] = [
   },
 ];
 
+const mockPersistence = {
+  getAll: () => {
+    return (
+      window.localStorage.getItem('recipes')
+        ? JSON.parse(window.localStorage.getItem('recipes')!)
+        : [...MOCK_RECIPES]
+    ) as Recipe[];
+  },
+  save: (recipes: Recipe[]) => {
+    window.localStorage.setItem('recipes', JSON.stringify(recipes));
+  },
+};
+
 export const recipesApi = {
-  getList: () => delayedReturn(5000, () => MOCK_RECIPES),
+  getList: () => delayedReturn(2000, mockPersistence.getAll),
+  update: (updatedRecipe: Recipe) => {
+    const list = mockPersistence.getAll();
+
+    const ri = list.findIndex((r) => r.id === updatedRecipe.id);
+
+    if (ri === -1) {
+      throw new Error('Recipe not found');
+    }
+
+    list[ri] = {
+      ...list[ri],
+      ...updatedRecipe,
+      updatedAt: new Date().toISOString(),
+    };
+
+    mockPersistence.save(list);
+
+    return delayedReturn(1000, () => list[ri]);
+  },
+  remove: (id: string) => {
+    const list = mockPersistence.getAll();
+
+    const ri = list.findIndex((r) => r.id === id);
+
+    if (ri === -1) {
+      throw new Error('Recipe not found');
+    }
+
+    list.splice(ri, 1);
+
+    mockPersistence.save(list);
+
+    return delayedReturn(1000, () => true);
+  },
+  create: (params: { name: string }) => {
+    const list = mockPersistence.getAll();
+
+    const newRecipe: Recipe = {
+      id: crypto.randomUUID(),
+      name: params.name,
+      description: '',
+      cuisine: '',
+      cookTime: 0,
+      createdAt: new Date().toISOString(),
+      difficulty: null,
+      ingredients: [],
+      instructions: [],
+      isFavorite: false,
+      notes: '',
+      photoUrl: null,
+      prepTime: 0,
+      servings: 1,
+      tags: [],
+      updatedAt: null,
+    };
+
+    list.push(newRecipe);
+
+    mockPersistence.save(list);
+
+    return delayedReturn(1000, () => newRecipe);
+  },
 };

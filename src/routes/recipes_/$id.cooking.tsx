@@ -133,7 +133,7 @@ function RouteComponent() {
             onBack={returnToRecipes} />
 
         <div className="px-2 py-3 flex flex-col gap-5">
-            <img src={recipe.photoUrl} alt={recipe.name} className="object-cover w-full h-auto rounded-sm" />
+            {!!recipe.photoUrl && <img src={recipe.photoUrl} alt={recipe.name} className="object-cover w-full h-auto rounded-sm" />}
 
             <div className="flex flex-col gap-1">
                 <h1 className="text-2xl font-bold">

@@ -49,6 +49,12 @@ function RouteComponent() {
         });
     }
 
+    const startEditing = () => {
+        router.navigate({
+            to: `/recipes/${recipe!.id}/edit`
+        });
+    }
+
     const toggleFavorite = (id: string) => {
         const isFavorite = recipe?.isFavorite;
 
@@ -71,7 +77,14 @@ function RouteComponent() {
 
     if (!recipe) {
         return <div className="flex flex-col gap-4">
-            <RecipeViewHeader isInCart={false} onAddToCart={() => { }} isFavorite={false} onToggleFavorite={() => { }} onBack={returnToRecipes} onCook={() => { }} />
+            <RecipeViewHeader
+                isInCart={false}
+                onAddToCart={() => { }}
+                isFavorite={false}
+                onToggleFavorite={() => { }}
+                onBack={returnToRecipes}
+                onEdit={() => { }}
+                onCook={() => { }} />
 
             <div className="px-2 py-3 flex flex-col gap-5">
                 <Skeleton className="w-full rounded-sm h-64" />
@@ -95,10 +108,11 @@ function RouteComponent() {
             onBack={returnToRecipes}
             onCook={() => setCookModalShown(true)}
             onAddToCart={() => addRecipeToShoppingCart()}
+            onEdit={startEditing}
         />
 
         <div className="px-2 py-3 flex flex-col gap-5">
-            <img src={recipe.photoUrl} alt={recipe.name} className="object-cover w-full h-auto rounded-sm" />
+            {!!recipe.photoUrl && <img src={recipe.photoUrl} alt={recipe.name} className="object-cover w-full h-auto rounded-sm" />}
 
             <div className="flex flex-col gap-1">
                 <h1 className="text-2xl font-bold">
@@ -121,7 +135,7 @@ function RouteComponent() {
                 </div>
                 <div className="flex gap-1 items-center">
                     <EarthIcon size={16} />
-                    <b>{recipe.cuisine}</b> cuisine
+                    <b>{recipe.cuisine || 'Unknown'}</b> cuisine
                 </div>
                 {recipe.tags.length > 0 && <div className="flex gap-1 items-center">
                     <TagIcon size={16} />

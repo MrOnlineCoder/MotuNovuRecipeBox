@@ -22,6 +22,9 @@ export function delayedReturn<T>(ms: number, fn: () => T): Promise<T> {
   });
 }
 
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 export function copyToClipboard(text: string) {
   navigator.clipboard.writeText(text);
 }
@@ -83,3 +86,11 @@ export function makeCaseInsensitiveSearchFilterer<T>(
     });
   };
 }
+
+export const fileToBase64Url = (file: File) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+  });

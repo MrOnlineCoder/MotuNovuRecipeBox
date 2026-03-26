@@ -11,6 +11,9 @@ export type RecipeStore = {
   toggleRecipeFavorite: (id: string) => void;
   getPossibleCuisines: () => string[];
   getPossibleTags: () => string[];
+  update: (id: string, data: Partial<Recipe>) => void;
+  remove: (id: string) => void;
+  create: (title: string) => Promise<Recipe | null>;
 };
 
 export const useRecipesStore = create<RecipeStore>((set, get) => ({
@@ -64,5 +67,63 @@ export const useRecipesStore = create<RecipeStore>((set, get) => ({
     }
 
     return Array.from(tagsSet);
+  },
+
+  update: async (id: string, recipe: Partial<Recipe>) => {
+    const recipes = get().recipes.slice();
+
+    const ri = recipes.findIndex((r) => r.id === id);
+
+    try {
+      if (ri !== -1) {
+        const updateData = {
+          ...recipes[ri],
+          ...recipe,
+        };
+        const updated = await recipesApi.update(updateData);
+
+        recipes[ri] = updated;
+      }
+
+      set({ recipes });
+    } catch (err) {
+      set({ error: (err as Error).message });
+    }
+  },
+
+  remove: async (id: string) => {
+    const recipes = get().recipes.slice();
+
+    const ri = recipes.findIndex((r) => r.id === id);
+
+    try {
+      if (ri !== -1) {
+        await recipesApi.remove(id);
+
+        recipes.splice(ri, 1);
+      }
+
+      set({ recipes });
+    } catch (err) {
+      set({ error: (err as Error).message });
+    }
+  },
+
+  create: async (name: string) => {
+    try {
+      const newRecipe = await recipesApi.create({
+        name,
+      });
+
+      set((state) => ({
+        recipes: [...state.recipes, newRecipe],
+      }));
+
+      return newRecipe;
+    } catch (err) {
+      set({ error: (err as Error).message });
+
+      return null;
+    }
   },
 }));

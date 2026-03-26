@@ -1,3 +1,4 @@
+import { NewRecipeModal } from '@/components/modals/NewRecipeModal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Panel } from '@/components/ui/panel'
@@ -6,13 +7,15 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useRecipesStore } from '@/store/recipe'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { BookPlusIcon, Calendar1Icon, ChefHat, CircleChevronRightIcon, SearchIcon } from 'lucide-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 const Index: React.FC = () => {
     const {
         isLoading,
         recipes
     } = useRecipesStore()
+
+    const [newRecipeModalOpen, setNewRecipeModalOpen] = useState(false);
 
     const hasRecipes = recipes.length > 0;
 
@@ -86,10 +89,17 @@ const Index: React.FC = () => {
 
         <Separator />
 
-        <Button variant="success" className="w-full">
+        <Button variant="success" className="w-full" onClick={() => setNewRecipeModalOpen(true)}>
             <BookPlusIcon size={16} />
             New recipe
         </Button>
+
+        {newRecipeModalOpen && (
+            <NewRecipeModal
+                onClose={() => setNewRecipeModalOpen(false)}
+            />
+        )}
+
     </div>
 }
 

@@ -176,6 +176,7 @@ function SelectScrollDownButton({
 
 const SimpleSelect: React.FC<{
     onChange: (value: any) => void
+    value?: any
     options: { value: any, label: string }[]
     defaultValue?: any
     className?: string
@@ -186,8 +187,9 @@ const SimpleSelect: React.FC<{
     defaultValue,
     className,
     placeholder,
+    value
 }) => {
-        return <Select onValueChange={onChange} defaultValue={defaultValue}>
+        return <Select onValueChange={onChange} value={value} defaultValue={defaultValue}>
             <SelectTrigger className={cn("w-full", className)}>
                 <SelectValue placeholder={placeholder} />
             </SelectTrigger>

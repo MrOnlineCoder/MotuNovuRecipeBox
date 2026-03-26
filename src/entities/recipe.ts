@@ -32,13 +32,13 @@ export interface Recipe {
   name: string;
   description: string;
   cuisine: string;
-  difficulty: RecipeDifficulty;
+  difficulty: RecipeDifficulty | null;
 
   prepTime: number; // in minutes
   cookTime: number; // in minutes
   servings: number;
 
-  photoUrl: string;
+  photoUrl: string | null;
 
   tags: string[];
 
