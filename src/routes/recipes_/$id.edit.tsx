@@ -12,7 +12,7 @@ import { RecipeDifficulty, RecipeIngredientUnit, type Recipe } from '@/entities/
 import { isIngredientQuantitative } from '@/lib/ingredients'
 import { useRecipesStore } from '@/store/recipe'
 import { createFileRoute } from '@tanstack/react-router'
-import { ClipboardClock, ClockIcon, EarthIcon, PlusIcon, TagIcon, TrashIcon, UploadIcon, ZapIcon } from 'lucide-react'
+import { ClipboardClock, ClockIcon, EarthIcon, PlusIcon, TagIcon, TrashIcon, ZapIcon } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -37,7 +37,6 @@ export type RecipeEditFields = {
 
 function RouteComponent() {
     const params = Route.useParams()
-    const query = Route.useSearch()
     const store = useRecipesStore()
 
     const [busy, setBusy] = useState(false);

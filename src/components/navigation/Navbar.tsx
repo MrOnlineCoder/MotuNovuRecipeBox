@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useRecipesStore } from "@/store/recipe";
 import { useRouter, useRouterState } from "@tanstack/react-router"
-import { BookOpenIcon, HeartIcon, HouseIcon, ShoppingCartIcon } from "lucide-react";
+import { BookOpenIcon, HouseIcon, ShoppingCartIcon } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { useShoppingStore } from "@/store/shopping";
 

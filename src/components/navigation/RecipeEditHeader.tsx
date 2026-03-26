@@ -1,4 +1,4 @@
-import { CheckLineIcon, ChevronLeftCircleIcon, CookingPot, HeartIcon, HeartMinusIcon, SaveIcon, ShoppingCartIcon, TrashIcon } from "lucide-react"
+import { ChevronLeftCircleIcon, SaveIcon, TrashIcon } from "lucide-react"
 import { Button } from "../ui/button"
 
 export const RecipeEditHeader: React.FC<{

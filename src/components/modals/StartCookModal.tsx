@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Button } from "../ui/button"
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
+import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 import { Input } from "../ui/input"
 import { MinusIcon, PlusIcon } from "lucide-react"
 

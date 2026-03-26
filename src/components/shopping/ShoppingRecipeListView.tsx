@@ -30,7 +30,7 @@ export const ShoppingRecipeListView: React.FC<{
     return <>
         {cartWithRecipes.map(item => {
             return <Panel className="flex flex-row gap-2 items-center py-4" key={item.recipeId}>
-                <img src={item.recipe.photoUrl} alt={item.recipe.name} className="rounded-sm h-10 w-12 object-cover" />
+                {!!item.recipe.photoUrl && <img src={item.recipe.photoUrl} alt={item.recipe.name} className="rounded-sm h-10 w-12 object-cover" />}
                 <h2 className="text-lg font-bold">{item.recipe.name}</h2>
 
                 <SimpleSelect

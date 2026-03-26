@@ -1,7 +1,6 @@
 import type { Recipe } from "@/entities/recipe";
 import { useRouter } from "@tanstack/react-router";
 import { ClockIcon, HeartIcon, UtensilsIcon } from "lucide-react";
-import { Badge } from "./ui/badge";
 
 export const RecipeCard: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
     const router = useRouter()

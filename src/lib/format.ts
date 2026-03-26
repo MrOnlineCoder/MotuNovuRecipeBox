@@ -1,4 +1,4 @@
-import { RecipeIngredientUnit, type RecipeIngredient } from '@/entities/recipe';
+import { type RecipeIngredient } from '@/entities/recipe';
 import { isIngredientQuantitative } from './ingredients';
 
 export const formatDoubleDecimal = (num: number) => {

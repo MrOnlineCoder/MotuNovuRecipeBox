@@ -1,6 +1,6 @@
 import { RecipeDifficulty } from "@/entities/recipe"
 import { Button } from "../ui/button"
-import { Drawer, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
+import { Drawer, DrawerContent, DrawerFooter, DrawerHeader, DrawerTitle } from "../ui/drawer"
 import { SimpleSelect } from "../ui/select"
 import { useState } from "react"
 import { useRecipesStore } from "@/store/recipe"
