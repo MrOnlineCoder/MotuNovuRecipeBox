@@ -86,6 +86,18 @@ TanStack Router is a modern routing solution from TanStack team, and is much mor
 * I am very sure that recipe viewing page can be improved for readability, especially instructions section, but I am not sure how exactly.
 * Accessibility would be probably the most rough point of the app, requiring more attention and effort.
 
+## TODO
+
+* All of issues mentioned earlier
+* Capture history of cooked recipes
+* Show simple stats like most cooked cuisine, untried recipes, etc.
+* Implement recipe sharing (export/import)
+* Implement dark mode
+* Implement more interactive feedback and animations
+* Accessibility improvements
+* Possible feature: add a recipe using OCR scanning from a photo
+
+
 ## Time Spent
 
 Total: about 18-20 hours.
