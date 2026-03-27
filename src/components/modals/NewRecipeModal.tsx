@@ -29,7 +29,7 @@ export const NewRecipeModal: React.FC<{
 
             if (newRecipe) {
                 navigate({
-                    to: '/recipes/$id',
+                    to: '/recipes/$id/edit',
                     params: {
                         id: newRecipe.id
                     }
