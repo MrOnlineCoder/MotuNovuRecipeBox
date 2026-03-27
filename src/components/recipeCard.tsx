@@ -16,7 +16,7 @@ const RecipeImage: React.FC<{
     return <>
         <img src={src} alt={alt} className={
             cn(
-                "h-16 rounded-sm w-auto object-cover",
+                "h-16 rounded-sm w-auto max-w-24 object-cover",
                 {
                     "hidden": !loaded,
                 }
