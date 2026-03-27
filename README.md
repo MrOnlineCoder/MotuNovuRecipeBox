@@ -13,7 +13,7 @@ You can see the initial assignment description in the original document: [FRONTE
 
 **None of the code or this README were written using AI agents**
 
-You view live demo at: [https://motu-novu-recipe-box-assignment.vercel.app/](https://motu-novu-recipe-box-assignment.vercel.app/)
+You can view live demo at: [https://motunovurecipeboxnm.netlify.app/](https://motunovurecipeboxnm.netlify.app/)
 
 Or, if you want to start locally:
 
