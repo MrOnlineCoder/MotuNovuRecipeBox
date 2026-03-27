@@ -341,7 +341,7 @@ export const recipesApi = {
       id: crypto.randomUUID(),
       name: params.name,
       description: '',
-      cuisine: '',
+      cuisine: 'Home-style',
       cookTime: 0,
       createdAt: new Date().toISOString(),
       difficulty: null,

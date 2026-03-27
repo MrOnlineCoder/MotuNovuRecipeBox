@@ -22,4 +22,5 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  base: '/MotuNovuRecipeBox/',
 });

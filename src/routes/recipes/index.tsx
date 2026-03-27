@@ -144,7 +144,7 @@ const RouteComponent: React.FC = () => {
         </div>
 
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 pb-3">
             {filteredRecipes.map(recipe => (
                 <RecipeCard recipe={recipe} key={recipe.id} />
             ))}
