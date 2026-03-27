@@ -80,7 +80,7 @@ function RouteComponent() {
         return <EmptyShoppingCart />
     }
 
-    return <div className="flex flex-col gap-4 px-3 pt-2">
+    return <div className="flex flex-col gap-4 px-3 pt-2 pb-2">
         <h1 className="text-2xl font-bold self-center">Shopping List Generator</h1>
         {step === ShoppingViewStep.RECIPE_LIST && <ShoppingRecipeListView onConfirm={onRecipesListConfirm} />}
         {step === ShoppingViewStep.INGREDIENTS_CHECK &&
